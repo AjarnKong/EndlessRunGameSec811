@@ -646,6 +646,13 @@ MonoBehaviour:
   laneChangeSpeed: 12
   jumpHeight: 1.5
   gravity: -25
+  hitCooldown: 0.6
+  invincibleDuration: 10
+  magnetDuration: 10
+  magnetRadius: 3.5
+  magnetPullSpeed: 14
+  invincibleTimer: 0
+  magnetTimer: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

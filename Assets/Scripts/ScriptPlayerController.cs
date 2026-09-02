@@ -13,6 +13,20 @@ public class ScriptPlayerController : MonoBehaviour
     private int currentLane;
     private float targetX;
 
+    public float hitCooldown = 0.6f;
+    private float hitTimer;
+
+    public float invincibleDuration = 10f, magnetDuration = 10f;
+    public float magnetRadius = 3.5f, magnetPullSpeed = 14f;
+    public float invincibleTimer, magnetTimer;
+
+    public bool IsInvincible => invincibleTimer > 0f;
+    public bool IsMagnetActive => magnetTimer > 0f;
+
+    public void ActivateInvincibility() => invincibleTimer = invincibleDuration;
+    
+    public void ActivateMagnet() => magnetTimer = magnetDuration;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -24,6 +38,23 @@ public class ScriptPlayerController : MonoBehaviour
     {
         HandleLaneInput();
         Move();
+
+        if (invincibleTimer > 0f) invincibleTimer -= Time.deltaTime;
+        if (magnetTimer > 0f) magnetTimer -= Time.deltaTime;
+        HandleMagnet();
+
+        if (hitTimer > 0f) hitTimer -= Time.deltaTime;
+    }
+
+    void HandleMagnet()
+    {
+        if (magnetTimer <= 0f) return;
+
+        foreach (Collider c in Physics.OverlapSphere(transform.position, magnetRadius))
+            if (c.CompareTag("Coin"))
+                c.transform.position = Vector3.MoveTowards(c.transform.position, 
+                                                           transform.position, 
+                                                           magnetPullSpeed * Time.deltaTime);
     }
 
     void HandleLaneInput()
@@ -67,5 +98,28 @@ public class ScriptPlayerController : MonoBehaviour
         move.y = verticalVelocity;
 
         controller.Move(move * Time.deltaTime);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Coin"))
+        {
+            ScriptGameManager.Instance.AddCoin();
+            Destroy(other.gameObject);
+        }
+        else if (other.CompareTag("PowerUp"))
+        {
+            ScriptPowerUp p = other.GetComponent<ScriptPowerUp>();
+
+            if (p != null) p.Apply(this);
+            Destroy(other.gameObject);
+        }
+        else if (other.CompareTag("Obstacle"))
+        {
+            if (IsInvincible || hitTimer > 0f) return;
+
+            hitTimer = hitCooldown;
+            ScriptGameManager.Instance.TakeDamage(1);
+        }
     }
 }
