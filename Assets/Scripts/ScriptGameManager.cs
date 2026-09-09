@@ -56,7 +56,7 @@ public class ScriptGameManager : MonoBehaviour
 
         CurrentHp -= amount; // CurrentHp = CurrentHp - amount;
 
-        //ScriptUIManager.Instance?.UpdateHP(CurrentHp);
+        ScriptUIManager.Instance?.UpdateHP(CurrentHp);
 
         if (CurrentHp <= 0)
         {
@@ -74,20 +74,20 @@ public class ScriptGameManager : MonoBehaviour
             coinProgress -= coinsPerExtraHP;
             AddHP(1);
         }
-        //ScriptUIManager.Instance?.UpdateCoins(TotalCoins, coinProgress);
+        ScriptUIManager.Instance?.UpdateCoin(TotalCoins, coinProgress);
     }
     
     public void AddHP(int amount)
     {
         CurrentHp = Mathf.Min(CurrentHp + amount, maxHp);
-        //ScriptUIManager.Instance?.UpdateHP(CurrentHP);
+        ScriptUIManager.Instance?.UpdateHP(CurrentHp);
     }
 
     public void GameOver()
     {
         Time.timeScale = 0;
         State = GameState.GameOver;
-        //ScriptUIManager.Instance?ShowGameOver(TotalCoins);
+        ScriptUIManager.Instance?.ShowGameOver(TotalCoins);
     }
 
     public void SetPaused(bool paused)

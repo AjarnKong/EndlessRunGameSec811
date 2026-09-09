@@ -27,11 +27,15 @@ public class ScriptPlayerController : MonoBehaviour
     
     public void ActivateMagnet() => magnetTimer = magnetDuration;
 
+    public Animator animator;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
         currentLane = GameContants.Centerlane;
         targetX = GameContants.LaneToX(currentLane);
+
+        //animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -88,6 +92,8 @@ public class ScriptPlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
             {
                 verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * gravity);
+
+                animator.SetTrigger("Jump");
             }
         }
         else
